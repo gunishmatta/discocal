@@ -100,7 +100,41 @@ async function handleCreateEvent(contents,messageObj)
     } catch (error){
         return error
     }
+}
 
+async function DeleteEvent(content, messageObj) {
+    messageObj.channel.send("Removing Event...")
+    if(!auth) {
+        try {
+            auth = await authorize(credentials, messageObj)
+        } catch(e) {
+            return e;
+        }
+    } //auth complete
 
+    let splittedContent = content.split(" ")
+    try {
+        return await deleteEvent(auth, splittedContent[1])
+    } catch(e) {
+        return e
+    }
+}
 
+async function handleTokenKey(tokenKey, messageObj) {
+    if (auth) {
+        return "Already Authenticated"
+    }
+    try {
+        return await getAccessToken(tokenKey)
+    } catch(e) {
+        return e
+    }
+}
+
+module.exports = {
+    ListEvents,
+    CreateEvent,
+    handleCreateEvent,
+    DeleteEvent,
+    handleTokenKey
 }
